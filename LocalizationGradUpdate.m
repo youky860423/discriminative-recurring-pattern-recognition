@@ -69,7 +69,7 @@ for iter=1:maxiter
             end
          end
      end
-    if (rem(iter, 100)==0)
+    if (rem(iter, 1000)==0)
         iter
 % %  %%%%%%%%%%%%display dictionary words at each iteration%%%%%%
 % %         figure(1)

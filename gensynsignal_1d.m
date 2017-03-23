@@ -1,11 +1,11 @@
 clear;
 close all
-B=200;
-T=500;
+B=100;
+T=100;
 pos_index=randi(T-1,B,1);
 A=10;
 pos_signal=zeros(T,B);
-win=300;
+win=T/5;
 %%%%%%%spike noise%%%%%%%
 % spike_index=randi(T-1,B/2,1);
 % sA_pos=100+10*randn(B/2,1);
@@ -55,6 +55,6 @@ for b=1:size(X,3)
     figure(1)
     plot(X(:,:,b));
     title(num2str(Y(b)))
-    pause()
+    pause(0.1)
 end
 save('synsignal_1d.mat','X','X2','y','Y','win');

@@ -2,14 +2,36 @@ function [ wnew,rllharr,wnorm] = LocOptimization( w,X,X2,Y,maxiter,option)
 %LOCOPTIMIZATION Summary of this function goes here
 %   Detailed explanation goes here
 
-options2 = struct('TolX',1e-10,'TolFun',1e-10,'GradObj','on','Display','off','LargeScale','off','HessUpdate','lbfgs','GoalsExactAchieve',0,'MaxIter',maxiter);
+options2 = struct('TolX',1e-10,'TolFun',1e-10,'GradObj','on','Display','off','LargeScale','off','HessUpdate','lbfgs','GoalsExactAchieve',0,'MaxIter',50);
 % %%%%%%%%%%%checking gradient%%%%%%%%%%
 % [fval,grad] = fcal(w,X,X2,Y,option);
 % tmp7=randn(size(w));
 % w2=w+1e-7*tmp7;
 % [fval2,~] = fcal(w2,X,X2,Y,option);
 % ((fval2-fval)/1e-7 - sum(sum(grad.*tmp7)))/(sum(sum(grad.*tmp7)))
-
+[wnew,~,~,~,~] = fminlbfgs(@(w)fcal(w,X,X2,Y,option),w,options2);
+%%%%%%%%shift to center%%%%%%%
+if option.addone
+    width=(length(w)-1)/size(X,1);
+else
+    width=length(w)/size(X,1);
+end
+ if option.center
+    if option.addone
+        words=reshape(wnew(1:end-1),width,[]);
+    else 
+        words=reshape(wnew,width,[]);
+    end
+    [~,idx]=max(sum(words.^2,2));
+    wordsnew=circshift(words,ceil(width/2)-idx);
+    if option.addone
+        wnew(1:end-1)=wordsnew(:);
+    else
+        wnew=wordsnew(:);
+    end
+ end
+ w=wnew;
+ options2 = struct('TolX',1e-10,'TolFun',1e-10,'GradObj','on','Display','off','LargeScale','off','HessUpdate','lbfgs','GoalsExactAchieve',0,'MaxIter',maxiter);
 [wnew,rllharr,enough,output,grad] = fminlbfgs(@(w)fcal(w,X,X2,Y,option),w,options2);
 wnorm=norm(wnew(1:end-1,:));
 % % %%%%%%%%%%%%display dictionary words after minimization%%%%%%

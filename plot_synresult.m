@@ -2,7 +2,8 @@ clear;
 close all;
 
 %%%%%%%%loading trained convolutional kernal and data%%%%%%%%
-load('synsignal_2d.mat');
+type='1d';
+load(['synsignal_',type,'.mat']);
 [F,T,N]=size(X);
 
 option.priortype=1;%1-'conv',0-'times';
@@ -13,7 +14,7 @@ no_train=ceil(perc*N);
 no_test=N-no_train;
 runs=10;
 %%%%%obtaining result files%%%%%%
-files=dir('synsignal2d_result*.mat');
+files=dir(['synsignal',type,'_result*.mat']);
 for f=1:length(files)
     filename=files(f).name;
     idx1=strfind(filename,'result_');
@@ -23,7 +24,7 @@ for f=1:length(files)
     width=win_size;
 
     for i=1:runs
-        load(['synsignal2d_result_',num2str(lambda),'_win_',num2str(win_size),'.mat']);
+        load(['synsignal',type,'_result_',num2str(lambda),'_win_',num2str(win_size),'.mat']);
         %%%%%%%%%%%%display learned discriminative pattern%%%%%%
         figure(1)
         if option.addone
@@ -47,7 +48,7 @@ for f=1:length(files)
         prior=zeros(size(wtxold));
         prior(wtxold<0)=exp(wtxold(wtxold<0))./(1+exp(wtxold(wtxold<0)));
         prior(wtxold>=0)=1./(1+exp(-wtxold(wtxold>=0)));
-        prior=prior(ceil(winsize/2):end-floor(winsize/2),:);
+        prior=prior(ceil(win_size/2):end-floor(win_size/2),:);
         tmpidx=randi(no_train,5,1);
         figure(2)
         for aa=1:5

@@ -9,25 +9,25 @@ else
     end
 end
 %%%%%%%%%%%fixing delay%%%%%%%%
-cnt=0;
+cnt1=0;
+truelab=2*ones(size(wtx));
 for b=1:B
-    truelab(:,b)=(1:2)*y{b};
+    truelab(ceil(winsize/2):end-floor(winsize/2),b)=(1:2)*y{b};
     idx=find(truelab(:,b)==1,1);
     if ~isempty(idx)
         [~,idx2]=max(wtx(:,b));
-        cnt=cnt+1;
-        delay(cnt)=idx-idx2;
+        cnt1=cnt1+1;
+        delay1(cnt1)=idx-idx2;
     end
 end
-wtx=circshift(wtx,mode(delay));
-wtx=wtx(ceil(winsize/2):end-floor(winsize/2),:);
+wtx=circshift(wtx,mode(delay1));
 wtx_vec=wtx(:);
 truelab_vec=truelab(:);
 [TPR,FPR,AUC] = ROCandAUC(wtx_vec,truelab_vec);
-figure(5)
-plot(FPR,TPR)
-title('ROC');
-pause()
+% figure(5)
+% plot(FPR,TPR)
+% title('ROC');
+% pause()
 %%%%%union rule to compute the bag accuracy%%%%%%
 prior=zeros(size(wtx));
 prior(wtx<0)=exp(wtx(wtx<0))./(1+exp(wtx(wtx<0)));

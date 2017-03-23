@@ -2,10 +2,12 @@ clear
 close all;
 
 %%%%%%load synthetic data%%%
-datasetname='synsignal_2d.mat';
+type='1d';
+width=20;%pattern length 20 for 1d, 2 for 2d;
+datasetname=['synsignal_',type,'.mat'];
 load(datasetname);
 [F,T,N]=size(X);
-win_size=3;
+win_size=2*width;%setting window size
 runs=10;
 perc=0.8;
 no_train=ceil(perc*N);
@@ -16,9 +18,9 @@ option.priorType='conv';%1-'conv',0-'times';
 option.conv = 1;%1-'conv',0-'fft';
 option.addone = 1;
 option.lambda = 1e-4;
-option.center=0;
-option.csiter=1000;
-option.ceiter=1500;
+option.center=1;
+option.csiter=500;
+option.ceiter=1000;
 option.cperiod=100;
 option.dc=0;
 
@@ -35,7 +37,7 @@ for i=1:runs
      for j=1:no_train
         trainX2{j} = X2{permidx(i,j)};
      end
-     wini=0.05*randn(no_para,1);
+    wini=1e-2*randn(no_para,1);
 %     tic;
 %     [ w{i},rllharr{i},wnorm{i}] = LocalizationGradUpdate( wini,trainX,trainX2,trainY, maxiter,option);
 %      runtime_miml(i)=toc 
@@ -51,8 +53,8 @@ for i=1:runs
     end
     [TPR(:,i),FPR(:,i),AUC(i),bagacc(i)] = testing( w{i},testX,testX2,testY,testy,option,win_size);
      i
-%      save(['synsignal2d_result_',num2str(option.lambda),'_win_',num2str(win_size),'.mat'],...
-%          'win_size','w','wnorm','permidx','rllharr','TPR','FPR','AUC','bagacc');
+     save(['synsignal',type,'_result_',num2str(option.lambda),'_win_',num2str(win_size),'.mat'],...
+         'win_size','w','wnorm','permidx','rllharr','TPR','FPR','AUC','bagacc');
 end
 
 
