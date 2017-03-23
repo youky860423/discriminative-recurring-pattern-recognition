@@ -15,29 +15,20 @@ for b=1:B
     nplus=sum(ysorted==1);
     for i=1:n
         FPR(i,b)=sum(ysorted(i:n)==2)/nmius;
-%         if sum(ysorted(i:n)==1) && nplus>0
-            TPR(i,b)=sum(ysorted(i:n)==1)/nplus;
-%         else
-%             TPR(i,b)=1;
-%         end
+        TPR(i,b)=sum(ysorted(i:n)==1)/nplus;
     end
     %%%%%%%%ranking method for auc%%%%%%
     list=unique(scoresorted);
     rank=(1:n);
     for i=1:length(list)
         num=sum(scoresorted==list(i));
-        if num>1;
+        if num>1
             rank(scoresorted==list(i))=sum(rank(scoresorted==list(i)))/num;
         end
     end
     R1=sum(rank(ysorted==1));
     U1=R1-nplus*(nplus+1)/2;
-%     if U1>0 && nplus>0
-        AUC(b)=U1/(nplus*nmius);
-%     else
-%         AUC(b)=1;
-%     end
-    
+    AUC(b)=U1/(nplus*nmius);   
     %%%%%%%%%%%area method for auc%%%%%%%
     for i=1:size(TPR,1)-1
         AUC2(b)=AUC2(b)+(FPR(i,b)-FPR(i+1,b))*(TPR(i+1,b)+TPR(i,b))/2;

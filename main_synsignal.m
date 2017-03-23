@@ -5,7 +5,7 @@ close all;
 datasetname='synsignal_2d.mat';
 load(datasetname);
 [F,T,N]=size(X);
-win_size=10;
+win_size=3;
 runs=10;
 perc=0.8;
 no_train=ceil(perc*N);
@@ -15,7 +15,7 @@ maxiter=10000;
 option.priorType='conv';%1-'conv',0-'times';
 option.conv = 1;%1-'conv',0-'fft';
 option.addone = 1;
-option.lambda = 1e-2;
+option.lambda = 1e-4;
 option.center=0;
 option.csiter=1000;
 option.ceiter=1500;
@@ -51,8 +51,8 @@ for i=1:runs
     end
     [TPR(:,i),FPR(:,i),AUC(i),bagacc(i)] = testing( w{i},testX,testX2,testY,testy,option,win_size);
      i
-     save(['synsignal2d_result_',num2str(option.lambda),'_win_',num2str(win_size),'.mat'],...
-         'win_size','w','wnorm','permidx','rllharr','TPR','FPR','AUC','bagacc');
+%      save(['synsignal2d_result_',num2str(option.lambda),'_win_',num2str(win_size),'.mat'],...
+%          'win_size','w','wnorm','permidx','rllharr','TPR','FPR','AUC','bagacc');
 end
 
 
